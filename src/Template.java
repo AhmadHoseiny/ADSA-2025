@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Template {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
         PrintWriter pw = new PrintWriter(System.out);
 
