@@ -14,9 +14,12 @@ public class DSU {
         n++;
         parent = new int[n];
         setSize = new int[n];
+        sets = new ArrayList[n];
         for (int i = 1; i < n; i++) {
             parent[i] = i;
             setSize[i] = 1;
+            sets[i] = new ArrayList<>();
+            sets[i].add(i);
         }
 
     }
