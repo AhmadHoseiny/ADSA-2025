@@ -14,7 +14,7 @@ public class DSU {
         n++;
         parent = new int[n];
         setSize = new int[n];
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i < n; i++) {
             parent[i] = i;
             setSize[i] = 1;
         }
