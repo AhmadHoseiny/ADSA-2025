@@ -123,6 +123,8 @@ public class SegmentTree {
                 return;
             this.left.sum = (this.left.r - this.left.l + 1) * value;
             this.right.sum = (this.right.r - this.right.l + 1) * value;
+            this.left.lazy += value;
+            this.right.lazy += value;
             this.lazy = -1;
         }
     }
