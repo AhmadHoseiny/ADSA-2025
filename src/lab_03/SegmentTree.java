@@ -104,6 +104,7 @@ public class SegmentTree {
         public static void updateRange(Node curr, int L, int R, int value) {
             if (curr.l >= L && curr.r <= R) {
                 curr.sum = (curr.r - curr.l + 1) * value;
+                curr.lazy = value;
                 return;
             }
             int mid = (curr.l + curr.r) / 2;
