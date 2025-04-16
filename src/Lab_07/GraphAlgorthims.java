@@ -2,15 +2,22 @@ package Lab_07;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class GraphAlgorthims {
-    static ArrayList<Integer> graph[];
-    static int[] vis, caller, parent;
+    static Scanner sc = new Scanner(System.in);
+
+    static PrintWriter pw = new PrintWriter(System.out);
+    static ArrayList<Integer> graph[], revGraph[], resGraph[];
+    static int[] vis, caller, parent, compIdx;
     static boolean foundCycle = false;
+
+    static ArrayList<Integer> order, currentComp;
+
     static void findCycleOnDG(int node) {
-        if(foundCycle)
+        if (foundCycle)
             return;
         vis[node] = 1;
         for (int next : graph[node]) {
@@ -18,7 +25,7 @@ public class GraphAlgorthims {
                 int currentNode = node;
                 while (true) {
                     System.out.print(currentNode + 1 + " ");
-                    if(currentNode == next)
+                    if (currentNode == next)
                         break;
                     currentNode = caller[currentNode];
                 }
@@ -34,23 +41,30 @@ public class GraphAlgorthims {
 
 
     static void findCycleOnUDG(int node, int parent) {
-        if(foundCycle)
+        if (foundCycle)
             return;
         vis[node] = 1;
         for (int next : graph[node]) {
-            if(next == parent)
+            if (next == parent)
                 continue;
-            if(foundCycle)
+            if (foundCycle)
                 return;
             if (vis[next] == 1) {
                 int currentNode = node;
+                ArrayList<Integer> arr = new ArrayList<>();
+                arr.add(next);
                 while (true) {
-                    System.out.print(currentNode + 1 + " ");
-                    if(currentNode == next)
+                    arr.add(currentNode);
+                    if (currentNode == next)
                         break;
                     currentNode = caller[currentNode];
                 }
+                System.out.println(arr.size());
+                for (Integer x : arr) {
+                    System.out.print(x + 1 + " ");
+                }
                 foundCycle = true;
+                System.exit(0);
                 return;
             } else if (vis[next] == 0) {
                 caller[next] = node;
@@ -60,10 +74,81 @@ public class GraphAlgorthims {
     }
 
 
+    static void dfs1(int node) {
+        vis[node] = 1;
+        for (int nxt : graph[node]) {
+            if (vis[nxt] == 0) {
+                dfs1(nxt);
+            }
+        }
+        order.add(node);
+    }
+
+    static int curIdx;
+
+    static void dfs2(int node) {
+        vis[node] = 1;
+        currentComp.add(node);
+        for (int nxt : revGraph[node]) {
+            if (vis[nxt] == 0) {
+                dfs2(nxt);
+            }
+        }
+        compIdx[node] = curIdx;
+    }
+
+    static void makeScc(int n, int m) throws IOException {
+        revGraph = new ArrayList[n];
+        resGraph = new ArrayList[n];
+        graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            resGraph[i] = new ArrayList<>();
+            revGraph[i] = new ArrayList<>();
+            graph[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < m; i++) {
+            int u = sc.nextInt() - 1, v = sc.nextInt() - 1;
+            graph[u].add(v);
+            revGraph[v].add(u);
+        }
+        vis = new int[n];
+        compIdx = new int[n];
+        order = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (vis[i] == 0) {
+                dfs1(i);
+            }
+        }
+        Collections.reverse(order);
+        vis = new int[n];
+        // the order array now is a stack, and the iterating over it = popping from the stack
+        for (int i = 0; i < n; i++) {
+            if (vis[order.get(i)] == 0) {
+                currentComp = new ArrayList<>();
+                curIdx = order.get(i);
+                dfs2(order.get(i));
+                // process the current component
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int nxt : graph[i]) {
+                if (compIdx[i] != compIdx[nxt]) {
+                    resGraph[compIdx[i]].add(compIdx[nxt]);
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
         int m = sc.nextInt();
+        // remove one of them depending on the problem
+
+        // scc
+        makeScc(n, m);
+
+        // cycle detection
         graph = new ArrayList[n];
         for (int i = 0; i < n; i++) {
             graph[i] = new ArrayList<>();
@@ -81,8 +166,8 @@ public class GraphAlgorthims {
                 findCycleOnUDG(i, -1);
             }
         }
-
-
+        System.out.println("IMPOSSIBLE");
+        pw.flush();
     }
 
     static class Scanner {
