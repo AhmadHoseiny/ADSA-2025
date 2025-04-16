@@ -40,6 +40,8 @@ public class GraphAlgorthims {
         for (int next : graph[node]) {
             if(next == parent)
                 continue;
+            if(foundCycle)
+                return;
             if (vis[next] == 1) {
                 int currentNode = node;
                 while (true) {
@@ -69,6 +71,7 @@ public class GraphAlgorthims {
         for (int i = 0; i < m; i++) {
             int u = sc.nextInt() - 1, v = sc.nextInt() - 1;
             graph[u].add(v);
+            graph[v].add(u);
         }
         vis = new int[n];
         caller = new int[n];
