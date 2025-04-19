@@ -1,9 +1,8 @@
-package Lab_07;
+package lab_07;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class GraphAlgorthims {
